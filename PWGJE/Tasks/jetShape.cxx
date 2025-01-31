@@ -10,7 +10,7 @@
 // or submit itself to any jurisdiction.
 
 ///
-/// \file   jetAnalysis.cxx
+/// \file   jetShape.cxx
 /// \author Yuto Nishida <yuto.nishida@cern.ch>
 /// \brief Task for measuring the dependence of the jet shape function rho(r) on the distance r from the jet axis.
 ///
