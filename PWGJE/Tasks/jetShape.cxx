@@ -4,7 +4,7 @@
 //
 // This software is distributed under the terms of the GNU General Public
 // License v3 (GPL Version 3), copied verbatim in the file "COPYING".
-//
+//constant
 // In applying this license CERN does not waive the privileges and immunities
 // granted to it by virtue of its status as an Intergovernmental Organization
 // or submit itself to any jurisdiction.
@@ -14,8 +14,6 @@
 /// \author Yuto Nishida <yuto.nishida@cern.ch>
 /// \brief Task for measuring the dependence of the jet shape function rho(r) on the distance r from the jet axis.
 ///
-
-
 
 #include "Framework/ASoA.h"
 #include "Framework/AnalysisDataModel.h"
@@ -39,15 +37,15 @@ using namespace o2;
 using namespace o2::framework;
 using namespace o2::framework::expressions;
 
-struct JetTutorialTask {
+struct JetShapeTask {
   HistogramRegistry registry{"registry",
-                              {{"tpcPi", "tpcPi", {HistType::kTH2F, {{1000, 0, 5},{401, -10.025f, 10.025f}}}},
-                              {"tofPi", "tofPi", {HistType::kTH2F, {{1000, 0, 5},{401, -10.025f, 10.025f}}}},
-                              {"tpcPr", "tpcPr", {HistType::kTH2F, {{1000, 0, 5},{401, -10.025f, 10.025f}}}},
-                              {"tofPr", "tofPr", {HistType::kTH2F, {{1000, 0, 5},{401, -10.025f, 10.025f}}}},
-                              {"tofTpc", "tofTpc", {HistType::kTH2F, {{401, -10.025f, 10.025f},{401, -10.025f, 10.025f}}}},
-                              {"tpcDedx", "tpcDedx", {HistType::kTH2F, {{1000, 0, 5},{1000, 0, 1000}}}},
-                              {"tofBeta", "tofBeta", {HistType::kTH2F, {{1000, 0, 5},{900, 0.2, 1.1}}}},
+                             {{"tpcPi", "tpcPi", {HistType::kTH2F, {{1000, 0, 5}, {401, -10.025f, 10.025f}}}},
+                              {"tofPi", "tofPi", {HistType::kTH2F, {{1000, 0, 5}, {401, -10.025f, 10.025f}}}},
+                              {"tpcPr", "tpcPr", {HistType::kTH2F, {{1000, 0, 5}, {401, -10.025f, 10.025f}}}},
+                              {"tofPr", "tofPr", {HistType::kTH2F, {{1000, 0, 5}, {401, -10.025f, 10.025f}}}},
+                              {"tofTpc", "tofTpc", {HistType::kTH2F, {{401, -10.025f, 10.025f}, {401, -10.025f, 10.025f}}}},
+                              {"tpcDedx", "tpcDedx", {HistType::kTH2F, {{1000, 0, 5}, {1000, 0, 1000}}}},
+                              {"tofBeta", "tofBeta", {HistType::kTH2F, {{1000, 0, 5}, {900, 0.2, 1.1}}}},
                               {"tofMass", "tofMass", {HistType::kTH1F, {{3000, 0, 3}}}},
                               {"jetPt", "jet pT;#it{p}_{T,jet} (GeV/#it{c});entries", {HistType::kTH1F, {{200, 0., 200.}}}},
                               {"jetEta", "jet #eta;#eta_{jet};entries", {HistType::kTH1F, {{100, -1.0, 1.0}}}},
@@ -55,13 +53,12 @@ struct JetTutorialTask {
                               {"area", "area", {HistType::kTH1F, {{200, 0, 4}}}},
                               {"rho", "rho", {HistType::kTH1F, {{200, -1, 119}}}},
                               {"ptCorr", "Corrected jet pT; p_{T}^{corr} (GeV/c); Counts", {HistType::kTH1F, {{200, 0, 200}}}},
-                              {"ptCorrVsDistance", "ptcorr_vs_distance",{HistType::kTH2F, {{70,0,0.7},{100, 0, 100}}}},
-                              {"trackPtVsDistance", "trackpt_vs_distance",{HistType::kTH2F, {{70,0,0.7},{100, 0, 100}}}},
-                              {"ptSum", "ptSum",{HistType::kTH2F, {{14,0,0.7},{300, 0, 300}}}},
-                              {"ptSumBg1", "ptSumBg1",{HistType::kTH2F, {{14,0,0.7},{300, 0, 300}}}},
-                              {"ptSumBg2", "ptSumBg2",{HistType::kTH2F, {{14,0,0.7},{300, 0, 300}}}},
-                              {"ptVsCentrality", "ptvscentrality",{HistType::kTH2F, {{100,0,100},{300, 0, 300}}}}
-                              }};
+                              {"ptCorrVsDistance", "ptcorr_vs_distance", {HistType::kTH2F, {{70, 0, 0.7}, {100, 0, 100}}}},
+                              {"trackPtVsDistance", "trackpt_vs_distance", {HistType::kTH2F, {{70, 0, 0.7}, {100, 0, 100}}}},
+                              {"ptSum", "ptSum", {HistType::kTH2F, {{14, 0, 0.7}, {300, 0, 300}}}},
+                              {"ptSumBg1", "ptSumBg1", {HistType::kTH2F, {{14, 0, 0.7}, {300, 0, 300}}}},
+                              {"ptSumBg2", "ptSumBg2", {HistType::kTH2F, {{14, 0, 0.7}, {300, 0, 300}}}},
+                              {"ptVsCentrality", "ptvscentrality", {HistType::kTH2F, {{100, 0, 100}, {300, 0, 300}}}}}};
 
   Configurable<float> vertexZCut{"vertexZCut", 10.0f, "Accepted z-vertex range"};
 
@@ -89,17 +86,16 @@ struct JetTutorialTask {
     eventSelection = jetderiveddatautilities::initialiseEventSelection(static_cast<std::string>(eventSelections));
     trackSelection = jetderiveddatautilities::initialiseTrackSelection(static_cast<std::string>(trackSelections));
     triggerMaskBits = jetderiveddatautilities::initialiseTriggerMaskBits(triggerMasks);
-
   }
 
   template <typename T, typename U>
   bool isAcceptedJet(U const& jet)
   {
     if (jetAreaFractionMin > -98.0) {
-      if (jet.area() < jetAreaFractionMin * M_PI * (jet.r() / 100.0) * (jet.r() / 100.0)) {
+      if (jet.area() < jetAreaFractionMin * o2::constants::math::PI * (jet.r() / 100.0) * (jet.r() / 100.0)) {
         return false;
       }
-      if (jet.area() < 0.5 * M_PI * (jet.r() / 100.0) * (jet.r() / 100.0)) {
+      if (jet.area() < o2::constants::math::PIHALF * (jet.r() / 100.0) * (jet.r() / 100.0)) {
         return false;
       }
     }
@@ -135,20 +131,19 @@ struct JetTutorialTask {
   Filter mcCollisionFilter = nabs(aod::jmccollision::posZ) < vertexZCut;
 
   Preslice<soa::Filtered<aod::ChargedMCParticleLevelJets>> perMcCollisionJets = aod::jet::mcCollisionId;
- 
+
   void processCharged(soa::Filtered<soa::Join<JetCollisions, aod::BkgChargedRhos>>::iterator const& collision, soa::Join<JetTracks, aod::pidTPCFullPi, aod::pidTOFFullPi, aod::pidTPCFullPr, aod::pidTOFFullPr, aod::TracksExtra, aod::TracksDCA, aod::pidTOFbeta, aod::pidTOFmass> const& tracks, soa::Join<aod::ChargedJets, aod::ChargedJetConstituents> const& jets)
   {
     if (!jetderiveddatautilities::selectCollision(collision, eventSelection)) {
       return;
     }
-    double_t ptDensity[14]={0};
-    double_t ptDensityBg1[14]={0};
-    double_t ptDensityBg2[14]={0};
+    double ptDensity[14] = {0};
+    double ptDensityBg1[14] = {0};
+    double ptDensityBg2[14] = {0};
 
-    //std::cout << collision.centrality() << std::endl;
-  
+    // std::cout << collision.centrality() << std::endl;
+
     for (auto const& jet : jets) {
-        
       if (!isAcceptedJet<JetTracks>(jet)) {
         continue;
       }
@@ -158,208 +153,88 @@ struct JetTutorialTask {
       int nJet = 0;
       nJet += jets.size();
 
-      for (const auto& track: tracks) {
-        
-        Double_t preDeltaPhi1 = 0;
-        Double_t deltaPhi1 = 0;
-        Double_t deltaEta = 0;
+      for (const auto& track : tracks) {
+        double preDeltaPhi1 = 0;
+        double deltaPhi1 = 0;
+        double deltaEta = 0;
 
-        preDeltaPhi1 = track.phi()- jet.phi();
+        preDeltaPhi1 = track.phi() - jet.phi();
 
-        if (preDeltaPhi1 > TMath::Pi()) {
-          deltaPhi1 = preDeltaPhi1 - TMath::TwoPi();
-        } 
-        else if (preDeltaPhi1 < -TMath::Pi()) {
-          deltaPhi1 = preDeltaPhi1 + TMath::TwoPi();
-        } 
-        else {
+        if (preDeltaPhi1 > o2::constants::math::PI) {
+          deltaPhi1 = preDeltaPhi1 - o2::constants::math::TWO_PI;
+        } else if (preDeltaPhi1 < -o2::constants::math::PI) {
+          deltaPhi1 = preDeltaPhi1 + o2::constants::math::TWO_PI;
+        } else {
           deltaPhi1 = preDeltaPhi1;
         }
 
-        float distance = TMath::Sqrt(deltaEta * deltaEta + deltaPhi1 * deltaPhi1);
+        float distance = std::sqrt(deltaEta * deltaEta + deltaPhi1 * deltaPhi1);
         registry.fill(HIST("trackPtVsDistance"), distance, track.pt());
         registry.fill(HIST("ptCorrVsDistance"), distance, ptCorr);
 
         registry.fill(HIST("ptVsCentrality"), collision.centrality(), track.pt());
 
-        double_t trackPtSum[14]={0};
-        double_t trackPtSumBg1[14]={0};
-        double_t trackPtSumBg2[14]={0};
-        Double_t phi2 = jet.phi() + (TMath::Pi()/2);
-        Double_t phi3 = jet.phi() - (TMath::Pi()/2);
-        Double_t preDeltaPhi2 = 0;
-        Double_t deltaPhi2 = 0;
-        Double_t preDeltaPhi3 = 0;
-        Double_t deltaPhi3 = 0;
+        double trackPtSum[14] = {0};
+        double trackPtSumBg1[14] = {0};
+        double trackPtSumBg2[14] = {0};
+        double phi2 = jet.phi() + (o2::constants::math::PIHALF);
+        double phi3 = jet.phi() - (o2::constants::math::PIHALF);
+        double preDeltaPhi2 = 0;
+        double deltaPhi2 = 0;
+        double preDeltaPhi3 = 0;
+        double deltaPhi3 = 0;
 
-        preDeltaPhi2 = track.phi()- phi2;
-        preDeltaPhi3 = track.phi()- phi3;
-    
+        preDeltaPhi2 = track.phi() - phi2;
+        preDeltaPhi3 = track.phi() - phi3;
 
-        if (preDeltaPhi2 > TMath::Pi()) {
-          deltaPhi2 = preDeltaPhi2 - TMath::TwoPi();
-        } 
-        else if (preDeltaPhi2 < -TMath::Pi()) {
-          deltaPhi2 = preDeltaPhi2 + TMath::TwoPi();
-        } 
-        else {
+        if (preDeltaPhi2 > o2::constants::math::PI) {
+          deltaPhi2 = preDeltaPhi2 - o2::constants::math::TWO_PI;
+        } else if (preDeltaPhi2 < -o2::constants::math::PI) {
+          deltaPhi2 = preDeltaPhi2 + o2::constants::math::TWO_PI;
+        } else {
           deltaPhi2 = preDeltaPhi2;
         }
 
-        if (preDeltaPhi3 > TMath::Pi()) {
-          deltaPhi3 = preDeltaPhi3 - TMath::TwoPi();
-        } 
-        else if (preDeltaPhi3 < -TMath::Pi()) {
-          deltaPhi3 = preDeltaPhi3 + TMath::TwoPi();
-        } 
-        else {
+        if (preDeltaPhi3 > o2::constants::math::PI) {
+          deltaPhi3 = preDeltaPhi3 - o2::constants::math::TWO_PI;
+        } else if (preDeltaPhi3 < -o2::constants::math::PI) {
+          deltaPhi3 = preDeltaPhi3 + o2::constants::math::TWO_PI;
+        } else {
           deltaPhi3 = preDeltaPhi3;
         }
 
         deltaEta = track.eta() - jet.eta();
 
-        float distanceBg1 = TMath::Sqrt(deltaEta * deltaEta + deltaPhi2 * deltaPhi2);
-        float distanceBg2 = TMath::Sqrt(deltaEta * deltaEta + deltaPhi3 * deltaPhi3);
+        float distanceBg1 = std::sqrt(deltaEta * deltaEta + deltaPhi2 * deltaPhi2);
+        float distanceBg2 = std::sqrt(deltaEta * deltaEta + deltaPhi3 * deltaPhi3);
 
-        if(distance < 0.05) {
-          trackPtSum[0] += track.pt();
-        }
-        else if (distance < 0.1) {
-          trackPtSum[1] += track.pt();
-        }
-        else if (distance < 0.15) {
-          trackPtSum[2] += track.pt();
-        }
-        else if (distance < 0.2) {
-          trackPtSum[3] += track.pt();
-        }
-        else if (distance < 0.25) {
-          trackPtSum[4] += track.pt();
-        }
-        else if (distance < 0.3) {
-          trackPtSum[5] += track.pt();
-        }
-        else if (distance < 0.35) {
-          trackPtSum[6] += track.pt();
-        }
-        else if (distance < 0.4) {
-          trackPtSum[7] += track.pt();
-        }
-        else if (distance < 0.45) {
-          trackPtSum[8] += track.pt();
-        }
-        else if (distance < 0.5) {
-          trackPtSum[9] += track.pt();
-        }
-        else if (distance < 0.55) {
-          trackPtSum[10] += track.pt();
-        }
-        else if (distance < 0.6) {
-          trackPtSum[11] += track.pt();
-        }
-        else if (distance < 0.65) {
-          trackPtSum[12] += track.pt();
-        }
-        else if (distance < 0.7) {
-          trackPtSum[13] += track.pt();
+        float trackMomentumCategory[] = {0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f};
+
+        for (int i = 0; i < 14; i++) {
+          if (distance < trackMomentumCategory[i])
+            trackPtSum[i] += track.pt();
         }
 
-        for (int8_t i=0; i<14; i++){
-          ptDensity[i] += trackPtSum[i]/(0.05 * ptCorr);
+        for (int8_t i = 0; i < 14; i++) {
+          ptDensity[i] += trackPtSum[i] / (0.05 * ptCorr);
         }
 
-        if(distanceBg1 < 0.05) {
-          trackPtSumBg1[0] += track.pt();
-        }
-        else if (distanceBg1 < 0.1) {
-          trackPtSumBg1[1] += track.pt();
-        }
-        else if (distanceBg1 < 0.15) {
-          trackPtSumBg1[2] += track.pt();
-        }
-        else if (distanceBg1 < 0.2) {
-          trackPtSumBg1[3] += track.pt();
-        }
-        else if (distanceBg1 < 0.25) {
-          trackPtSumBg1[4] += track.pt();
-        }
-        else if (distanceBg1 < 0.3) {
-          trackPtSumBg1[5] += track.pt();
-        }
-        else if (distanceBg1 < 0.35) {
-          trackPtSumBg1[6] += track.pt();
-        }
-        else if (distanceBg1 < 0.4) {
-          trackPtSumBg1[7] += track.pt();
-        }
-        else if (distanceBg1 < 0.45) {
-          trackPtSumBg1[8] += track.pt();
-        }
-        else if (distanceBg1 < 0.5) {
-          trackPtSumBg1[9] += track.pt();
-        }
-        else if (distanceBg1 < 0.55) {
-          trackPtSumBg1[10] += track.pt();
-        }
-        else if (distanceBg1 < 0.6) {
-          trackPtSumBg1[11] += track.pt();
-        }
-        else if (distanceBg1 < 0.65) {
-          trackPtSumBg1[12] += track.pt();
-        }
-        else if (distanceBg1 < 0.7) {
-          trackPtSumBg1[13] += track.pt();
+        for (int i = 0; i < 14; i++) {
+          if (distanceBg1 < trackMomentumCategory[i])
+            trackPtSumBg1[i] += track.pt();
         }
 
-        for (Int_t i=0; i<14; i++){
-          ptDensityBg1[i] += trackPtSumBg1[i]/(0.05 * ptCorr);
+        for (int i = 0; i < 14; i++) {
+          ptDensityBg1[i] += trackPtSumBg1[i] / (0.05 * ptCorr);
         }
 
-        if(distanceBg2 < 0.05) {
-          trackPtSumBg2[0] += track.pt();
-        }
-        else if (distanceBg2 < 0.1) {
-          trackPtSumBg2[1] += track.pt();
-        }
-        else if (distanceBg2 < 0.15) {
-          trackPtSumBg2[2] += track.pt();
-        }
-        else if (distanceBg2 < 0.2) {
-          trackPtSumBg2[3] += track.pt();
-        }
-        else if (distanceBg2 < 0.25) {
-          trackPtSumBg2[4] += track.pt();
-        }
-        else if (distanceBg2 < 0.3) {
-          trackPtSumBg2[5] += track.pt();
-        }
-        else if (distanceBg2 < 0.35) {
-          trackPtSumBg2[6] += track.pt();
-        }
-        else if (distanceBg2 < 0.4) {
-          trackPtSumBg2[7] += track.pt();
-        }
-        else if (distanceBg2 < 0.45) {
-          trackPtSumBg2[8] += track.pt();
-        }
-        else if (distanceBg2 < 0.5) {
-          trackPtSumBg2[9] += track.pt();
-        }
-        else if (distanceBg2 < 0.55) {
-          trackPtSumBg2[10] += track.pt();
-        }
-        else if (distanceBg2 < 0.6) {
-          trackPtSumBg2[11] += track.pt();
-        }
-        else if (distanceBg2 < 0.65) {
-          trackPtSumBg2[12] += track.pt();
-        }
-        else if (distanceBg2 < 0.7) {
-          trackPtSumBg2[13] += track.pt();
+        for (int i = 0; i < 14; i++) {
+          if (distanceBg2 < trackMomentumCategory[i])
+            trackPtSumBg2[i] += track.pt();
         }
 
-        for (Int_t i=0; i<14; i++){
-          ptDensityBg2[i] += trackPtSumBg2[i]/(0.05 * ptCorr);
+        for (int i = 0; i < 14; i++) {
+          ptDensityBg2[i] += trackPtSumBg2[i] / (0.05 * ptCorr);
         }
 
         registry.fill(HIST("tpcDedx"), track.pt(), track.tpcSignal());
@@ -377,21 +252,20 @@ struct JetTutorialTask {
       registry.fill(HIST("area"), jet.area());
       registry.fill(HIST("rho"), collision.rho());
       registry.fill(HIST("ptCorr"), ptCorr);
-      //std::cout << nJet << std::endl;
+      // std::cout << nJet << std::endl;
 
-      for (Int_t i=0; i<14; i++) {
-        double JetX = 0.05*i+0.025;
+      for (int i = 0; i < 14; i++) {
+        double jetX = 0.05 * i + 0.025;
         double jetShapeFunction = ptDensity[i] / nJet;
         double jetShapeFunctionBg1 = ptDensityBg1[i] / nJet;
         double jetShapeFunctionBg2 = ptDensityBg2[i] / nJet;
-        registry.fill(HIST("ptSum"), JetX, jetShapeFunction);
-        registry.fill(HIST("ptSumBg1"), JetX, jetShapeFunctionBg1);
-        registry.fill(HIST("ptSumBg2"), JetX, jetShapeFunctionBg2);
-
+        registry.fill(HIST("ptSum"), jetX, jetShapeFunction);
+        registry.fill(HIST("ptSumBg1"), jetX, jetShapeFunctionBg1);
+        registry.fill(HIST("ptSumBg2"), jetX, jetShapeFunctionBg2);
       }
-    }  
+    }
   }
-  PROCESS_SWITCH(JetTutorialTask, processCharged, "charged jets in detector level MC", true);
+  PROCESS_SWITCH(JetShapeTask, processCharged, "charged jets", true);
 };
 
-WorkflowSpec defineDataProcessing(ConfigContext const& cfgc) { return WorkflowSpec{adaptAnalysisTask<JetTutorialTask>(cfgc, TaskName{"jet-tutorial"})}; }
+WorkflowSpec defineDataProcessing(ConfigContext const& cfgc) { return WorkflowSpec{adaptAnalysisTask<JetShapeTask>(cfgc)}; }
