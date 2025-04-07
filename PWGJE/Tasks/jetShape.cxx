@@ -100,8 +100,8 @@ struct JetShapeTask {
   template <typename T, typename U>
   bool isAcceptedJet(U const& jet)
   {
-    static constexpr double kJetAreaFractonMinValue = -98.0
-    if (jetAreaFractionMin > kJetAreaFractonMinValue) {
+    static constexpr double kJetAreaFractonMinValue = -98.0 if (jetAreaFractionMin > kJetAreaFractonMinValue)
+    {
       if (jet.area() < jetAreaFractionMin * o2::constants::math::PI * (jet.r() / 100.0) * (jet.r() / 100.0)) {
         return false;
       }
