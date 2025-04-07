@@ -100,7 +100,8 @@ struct JetShapeTask {
   template <typename T, typename U>
   bool isAcceptedJet(U const& jet)
   {
-    if (jetAreaFractionMin > -98.0) {
+    static constexpr double kJetAreaFractonMinValue = -98.0
+    if (jetAreaFractionMin > kJetAreaFractonMinValue) {
       if (jet.area() < jetAreaFractionMin * o2::constants::math::PI * (jet.r() / 100.0) * (jet.r() / 100.0)) {
         return false;
       }
@@ -108,9 +109,13 @@ struct JetShapeTask {
         return false;
       }
     }
+
+    static constexpr double kLeadingConstituentPtMinThreshold = 5.0;
+    static constexpr double kLeadingConstituentPtMaxThreshold = 9998.0;
+
     bool checkConstituentPt = true;
-    bool checkConstituentMinPt = (leadingConstituentPtMin > 5);
-    bool checkConstituentMaxPt = (leadingConstituentPtMax < 9998.0);
+    bool checkConstituentMinPt = (leadingConstituentPtMin > kLeadingConstituentPtMinThreshold);
+    bool checkConstituentMaxPt = (leadingConstituentPtMax < kLeadingConstituentPtMaxThreshold);
     if (!checkConstituentMinPt && !checkConstituentMaxPt) {
       checkConstituentPt = false;
     }
