@@ -80,7 +80,7 @@ struct JetShapeTask {
   Configurable<std::vector<float>> distanceCategory{"distanceCategory", {0.00f, 0.05f, 0.10f, 0.15f, 0.20f, 0.25f, 0.30f, 0.35f, 0.40f, 0.45f, 0.50f, 0.55f, 0.60f, 0.65f, 0.70f}, "distance of category"};
 
   // for ppi production
-Configurable<float> etaTrUp{"etaTrUp", 0.7f, "maximum track eta"};
+  Configurable<float> etaTrUp{"etaTrUp", 0.7f, "maximum track eta"};
   Configurable<float> dcaxyMax{"dcaxyMax", 2.0f, "mximum DCA xy"};
   Configurable<float> chi2ItsMax{"chi2ItsMax", 15.0f, "its chi2 cut"};
   Configurable<float> chi2TpcMax{"chi2TpcMax", 4.0f, "tpc chi2 cut"};
